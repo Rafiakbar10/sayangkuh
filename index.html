@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinta Romantis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f372b3;
+            color: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .container {
+            max-width: 600px;
+            padding: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #0a0a0a;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #3116c7;
+        }
+        
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+        
+        .scary-img {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1000;
+            display: none;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-20px); }
+            50% { transform: translateX(20px); }
+            75% { transform: translateX(-20px); }
+            100% { transform: translateX(20px); }
+        }
+        
+        .warning {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: 2rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Untuk Kamu yang Spesial ❤️</h1>
+        <p>Aku punya sesuatu yang sangat spesial untukmu Hanan hari ini.</p>
+        <button class="btn" id="testBtn">BUKA</button>
+        <p class="warning">Keraskan suaranya ya sayang agar kedengeran suaraku</p>
+    </div>
+    
+    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/72fa65d6-f26e-4e1f-90d3-6eba944d12d2.png" alt="Horror face with wide eyes and open mouth appearing suddenly with intense expression" class="scary-img" id="scaryImage">
+    
+    <script>
+        // Prepare scary sound
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let soundBuffer;
+        
+        // Function to create scary sound
+        function createScarySound() {
+            const duration = 2;
+            const sampleRate = audioContext.sampleRate;
+            const numFrames = duration * sampleRate;
+            const buffer = audioContext.createBuffer(1, numFrames, sampleRate);
+            const data = buffer.getChannelData(0);
+            
+            // Generate a loud, scary sound
+            for (let i = 0; i < numFrames; i++) {
+                // Random noise
+                data[i] = Math.random() * 0.5 - 0.25;
+                
+                // Add sudden high frequency tones
+                if (i % 100 < 50) {
+                    data[i] += Math.sin(i * 0.2) * 0.3;
+                }
+                
+                // Add occasional clicks
+                if (i % 2000 < 10) {
+                    data[i] += Math.random() * 0.8 - 0.4;
+                }
+            }
+            
+            return buffer;
+        }
+        
+        soundBuffer = createScarySound();
+        
+        // Button click handler
+        document.getElementById('testBtn').addEventListener('click', function() {
+            // Show scary image
+            const scaryImg = document.getElementById('scaryImage');
+            scaryImg.style.display = 'block';
+            
+            // Play scary sound
+            const sound = audioContext.createBufferSource();
+            sound.buffer = soundBuffer;
+            sound.connect(audioContext.destination);
+            sound.start();
+            
+            // Flash background
+            document.body.style.backgroundColor = 'black';
+            
+            // Return to normal after 2 seconds
+            setTimeout(() => {
+                scaryImg.style.display = 'none';
+                document.body.style.backgroundColor = '#f0f0f0';
+            }, 2000);
+        });
+        
+        // Prevent right click to inspect
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // Hide cursor and prevent text selection for better effect
+        document.body.style.cursor = 'none';
+        document.body.style.userSelect = 'none';
+    </script>
+</body>
+</html>
+
